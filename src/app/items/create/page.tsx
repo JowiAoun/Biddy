@@ -1,12 +1,14 @@
+"use client";
+
 import {
   AppShellMain,
   Button,
   TextInput,
-  Text, NumberInput,
+  Text, NumberInput, FileInput,
 } from "@mantine/core";
-import {createItemAction} from "@/app/items/create/actions";
+import {createUploadUrlAction} from "@/app/items/create/actions";
 
-export default async function ItemCreatePage() {
+export default function ItemCreatePage() {
 
   return (
     <AppShellMain className="px-8 pt-24 space-y-8">
@@ -16,8 +18,24 @@ export default async function ItemCreatePage() {
 
       <form
         className="flex flex-col border p-8 rounded-xl space-y-4 max-w-lg"
-        action={createItemAction}
+        onSubmit={async (e) => {
+          e.preventDefault();
+          const form = e.currentTarget as HTMLFormElement;
+          const formData = new FormData(form);
+          const file = formData.get("file") as File;
+
+          const uploadUrl = await createUploadUrlAction(file.name, file.type);
+          const uploadFormData = new FormData();
+          uploadFormData.append("file", file);
+
+          await fetch(uploadUrl, {
+            method: "PUT",
+            body: file,
+            headers: { "Content-Type": file.type },
+          });
+        }}
       >
+        <FileInput name="file" placeholder="Upload images"/>
         <TextInput required name="name" placeholder="Name your item" />
         <NumberInput required name="priceStart" decimalScale={2} min={1} placeholder="Starting price" rightSection={<Text>Sample Currency</Text>} fixedDecimalScale />
 

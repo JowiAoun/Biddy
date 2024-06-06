@@ -1,4 +1,4 @@
-Well designed auction application using the following techs:
+Well-designed auction application using the following techs:
 - TypeScript
 - NextJS
 - React
@@ -8,3 +8,5 @@ Well designed auction application using the following techs:
 - OAuth
 - CloudFlare R2
 - Google authentication
+- Zod
+- Docker, compose

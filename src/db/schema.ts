@@ -47,27 +47,6 @@ export const verificationTokenSchema = pgTable(
   })
 )
 
-export const authenticatorSchema = pgTable(
-  "authenticator",
-  {
-    credentialID: text("credentialID").notNull().unique(),
-    userId: text("userId")
-      .notNull()
-      .references(() => userSchema.id, { onDelete: "cascade" }),
-    providerAccountId: text("providerAccountId").notNull(),
-    credentialPublicKey: text("credentialPublicKey").notNull(),
-    counter: integer("counter").notNull(),
-    credentialDeviceType: text("credentialDeviceType").notNull(),
-    credentialBackedUp: boolean("credentialBackedUp").notNull(),
-    transports: text("transports"),
-  },
-  (authenticator) => ({
-    compositePK: primaryKey({
-      columns: [authenticator.userId, authenticator.credentialID],
-    }),
-  })
-)
-
 export const bidSchema = pgTable("bid", {
   id: serial("id").primaryKey(),
 })
@@ -76,6 +55,7 @@ export const itemSchema = pgTable("item", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   priceStart: real("priceStart").notNull(),
+  fileKey: text("fileKey").notNull(),
   userId: text("userId")
     .notNull()
     .references(() => userSchema.id, { onDelete: "cascade" }),
@@ -90,3 +70,5 @@ export const userSchema = pgTable("user", {
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
 })
+
+export type Item = typeof itemSchema.$inferSelect;

@@ -6,10 +6,9 @@ import {
   TextInput,
   Text, NumberInput, FileInput,
 } from "@mantine/core";
-import {createUploadUrlAction} from "@/app/items/create/actions";
+import {createItemAction, createUploadUrlAction} from "@/app/items/create/actions";
 
 export default function ItemCreatePage() {
-
   return (
     <AppShellMain className="px-8 pt-24 space-y-8">
       <Text className="text-4xl font-bold">
@@ -33,6 +32,15 @@ export default function ItemCreatePage() {
             body: file,
             headers: { "Content-Type": file.type },
           });
+
+          const name = formData.get("name") as string;
+          const priceStart = parseFloat(formData.get("priceStart") as string);
+
+          await createItemAction({
+            name,
+            priceStart,
+            fileName: file.name,
+          })
         }}
       >
         <FileInput name="file" placeholder="Upload images"/>

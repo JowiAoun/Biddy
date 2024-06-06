@@ -10,7 +10,12 @@ export async function createUploadUrlAction(key: string, type: string) {
   return await getSignedUrlForS3Object(key, type);
 }
 
-export async function createItemAction(formData: FormData) {
+export async function createItemAction({
+  fileName,
+  name,
+  priceStart,
+  }: {fileName: string, name: string, priceStart: number}
+) {
   const session = await auth();
 
   if (!session) {
@@ -24,8 +29,9 @@ export async function createItemAction(formData: FormData) {
   }
 
   await database.insert(itemSchema).values({
-    name: formData.get("name") as string,
-    priceStart: parseFloat(formData.get("priceStart") as string),
+    name: name,
+    priceStart: priceStart,
+    fileKey: fileName,
     userId: user.id
   })
 

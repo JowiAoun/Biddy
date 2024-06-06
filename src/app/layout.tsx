@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import "./globals.css";
 import '@mantine/core/styles.css';
-import { ColorSchemeScript, MantineProvider } from '@mantine/core';
+import {AppShell, ColorSchemeScript, MantineProvider} from '@mantine/core';
+import {Header} from "@/app/header";
+import "./globals.css"
 
 export const metadata: Metadata = {
   title: "Biddy",
@@ -20,7 +21,12 @@ export default function RootLayout({
         <title>Biddy</title>
       </head>
       <body>
-        <MantineProvider>{children}</MantineProvider>
+        <MantineProvider>
+          <AppShell header={{height: "4rem"}}>
+            <Header/>
+            {children}
+          </AppShell>
+        </MantineProvider>
       </body>
     </html>
   );

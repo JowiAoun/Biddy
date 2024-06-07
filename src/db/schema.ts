@@ -53,12 +53,13 @@ export const bidSchema = pgTable("bid", {
 
 export const itemSchema = pgTable("item", {
   id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  priceStart: real("priceStart").notNull(),
-  fileKey: text("fileKey").notNull(),
   userId: text("userId")
     .notNull()
     .references(() => userSchema.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  priceStart: real("priceStart").notNull(),
+  fileKey: text("fileKey").notNull(),
+  bidInterval: real("bidInterval").notNull(),
 })
 
 export const userSchema = pgTable("user", {

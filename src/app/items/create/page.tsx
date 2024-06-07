@@ -10,7 +10,7 @@ import {createItemAction, createUploadUrlAction} from "@/app/items/create/action
 
 export default function ItemCreatePage() {
   return (
-    <AppShellMain className="px-8 pt-24 space-y-8">
+    <AppShellMain className="space-y-8">
       <Text className="text-4xl font-bold">
         Post an item to the Auction
       </Text>

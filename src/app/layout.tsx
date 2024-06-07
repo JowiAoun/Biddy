@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import '@mantine/core/styles.css';
-import {AppShell, ColorSchemeScript, MantineProvider} from '@mantine/core';
+import {AppShell, Box, ColorSchemeScript, MantineProvider} from '@mantine/core';
 import {Header} from "@/app/header";
 import "./globals.css"
 
@@ -24,7 +24,10 @@ export default function RootLayout({
         <MantineProvider>
           <AppShell header={{height: "4rem"}}>
             <Header/>
-            {children}
+
+            <Box className="p-8">
+              {children}
+            </Box>
           </AppShell>
         </MantineProvider>
       </body>

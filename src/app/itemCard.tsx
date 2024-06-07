@@ -1,6 +1,7 @@
-import {Button, Card, CardSection, GridCol, Group, Image, Text} from "@mantine/core";
+import {Button, Card, CardSection, Group, Image, Text} from "@mantine/core";
 import {getImageUrl} from "@/util/files";
 import {Item} from "@/db/schema";
+import Link from "next/link";
 
 export function ItemCard({item}: {item: Item}) {
   return (
@@ -8,7 +9,8 @@ export function ItemCard({item}: {item: Item}) {
     <CardSection>
       <Image
         src={getImageUrl(item.fileKey)}
-        height={160}
+        width={200}
+        height={200}
         alt={item.name}
       />
       </CardSection>
@@ -21,8 +23,8 @@ export function ItemCard({item}: {item: Item}) {
         Sample description
       </Text>
 
-      <Button color="blue" fullWidth mt="md" radius="md">
-        Sample button
+      <Button>
+        <Link href={`/items/${item.id}`}>Bid</Link>
       </Button>
     </Card>
   )

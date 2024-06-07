@@ -25,7 +25,7 @@ export default async function MyAuctionPage() {
   const hasItems = allItems.length > 0;
 
   return (
-    <AppShellMain className="px-8 pt-24 space-y-8">
+    <AppShellMain className="space-y-8">
       <Text className="text-4xl font-bold">
         Your ongoing Auctions
       </Text>

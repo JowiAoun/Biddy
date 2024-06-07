@@ -12,7 +12,7 @@ export default async function HomePage() {
   const allItems = await database.query.itemSchema.findMany();
 
   return (
-    <AppShellMain className="px-8 pt-24 space-y-8">
+    <AppShellMain className="space-y-8">
       <Text className="text-4xl font-bold">
         Items for Sale
       </Text>

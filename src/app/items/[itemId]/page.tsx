@@ -1,14 +1,14 @@
 import {
   AppShellMain, Box, Button, Group, Image,
-  Text, Container
+  Text
 } from "@mantine/core";
 import {database} from "@/db/database";
-import {itemSchema} from "@/db/schema";
-import {eq} from "drizzle-orm";
+import {Bid, bidSchema, itemSchema} from "@/db/schema";
+import {desc, eq} from "drizzle-orm";
 import Link from "next/link";
 import {getImageUrl} from "@/util/files";
-import {formatTimestampDistance} from "@/util/format";
 import {BidCard} from "@/app/items/[itemId]/bidCard";
+import {createBidAction} from "@/app/items/[itemId]/actions";
 
 export default async function ItemPage({
   params: { itemId },
@@ -25,7 +25,7 @@ export default async function ItemPage({
         <Image src="/noItemsListed.svg" width={200} height={200} alt="No items listed"/>
         <Text className="text-4xl font-bold">
           Item not found
-          {/*  TODO: Use a generic 404 page */}
+          {/*  TODO: Use generic 404 page */}
         </Text>
 
         <Text className="text-l">
@@ -40,26 +40,18 @@ export default async function ItemPage({
     );
   }
 
-  const bids = [
-    {
-      id: 1,
-      amount: 100,
-      username: "Alice",
-      timestamp: new Date(),
-    },
-    {
-      id: 2,
-      amount: 200,
-      username: "Bob",
-      timestamp: new Date(),
-    },
-    {
-      id: 3,
-      amount: 300,
-      username: "Charlie",
-      timestamp: new Date(),
+  const bids = await database.query.bidSchema.findMany({
+    where: eq(bidSchema.itemId, item.id),
+    orderBy: desc(bidSchema.id),
+    with: {
+      user: {
+        columns: {
+          image: true,
+          name: true,
+        }
+      }
     }
-  ];
+  })
 
   const hasBids = bids.length > 0;
 
@@ -90,18 +82,26 @@ export default async function ItemPage({
         </Box>
 
         <Box className="space-y-4 flex-1">
-          <Text className="text-2xl font-bold">
-            Bids history
-          </Text>
+          <Box className="flex justify-between">
+            <Text className="text-2xl font-bold">
+              Bids history
+            </Text>
+            <form action={createBidAction.bind(null, item.id)}>
+              <Button type="submit">Place a bid</Button>
+            </form>
+          </Box>
 
           {hasBids ?
-            bids.map((bid) => (
+            bids.map((bid: Bid) => (
               <BidCard bid={bid} key={bid.id}/>
             ))
-          : <Text>
-              No bids yet
-              <Image src="/noItemsListed.svg" width={200} height={200} alt="No items listed"/>
-            </Text>
+            : <Box className="flex flex-col items-center gap-8 bg-gray-100 rounded-xl p-12">
+              <Image src="/noItemsListed.svg" width={200} height={200} alt="Package"/>
+              <Text className="text-2xl font-bold">No bids yet</Text>
+              <form action={createBidAction.bind(null, item.id)}>
+                <Button type="submit">Place a bid</Button>
+              </form>
+            </Box>
           }
         </Box>
       </Group>

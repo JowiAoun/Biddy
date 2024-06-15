@@ -14,7 +14,8 @@ export async function createItemAction({
   fileName,
   name,
   priceStart,
-  }: {fileName: string, name: string, priceStart: number}
+  bidInterval,
+  }: {fileName: string, name: string, priceStart: number, bidInterval: number}
 ) {
   const session = await auth();
 
@@ -31,8 +32,10 @@ export async function createItemAction({
   await database.insert(itemSchema).values({
     name: name,
     priceStart: priceStart,
+    highestBid: priceStart,
+    bidInterval: bidInterval,
     fileKey: fileName,
-    userId: user.id
+    userId: user.id,
   })
 
   redirect('/');

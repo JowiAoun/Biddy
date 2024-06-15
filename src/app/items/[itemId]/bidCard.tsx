@@ -6,7 +6,7 @@ export function BidCard({bid}: {bid: any}) {
   return (
     <Container className="bg-gray-100 rounded-xl p-8" key={bid.id}>
       <Text>
-        ${bid.amount} by {bid.username} at {formatTimestampDistance(bid.timestamp)}
+        ${bid.amount} by {bid.user.name} at {formatTimestampDistance(bid.timestamp)}
       </Text>
     </Container>
   );

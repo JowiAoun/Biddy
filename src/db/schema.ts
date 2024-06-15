@@ -1,5 +1,6 @@
-import {boolean, integer, pgTable, primaryKey, real, serial, text, timestamp} from "drizzle-orm/pg-core";
+import {integer, pgTable, primaryKey, real, serial, text, timestamp} from "drizzle-orm/pg-core";
 import {AdapterAccountType} from "@auth/core/adapters";
+import {relations} from "drizzle-orm";
 
 export const accountSchema = pgTable(
   "account",
@@ -47,10 +48,6 @@ export const verificationTokenSchema = pgTable(
   })
 )
 
-export const bidSchema = pgTable("bid", {
-  id: serial("id").primaryKey(),
-})
-
 export const itemSchema = pgTable("item", {
   id: serial("id").primaryKey(),
   userId: text("userId")
@@ -58,8 +55,21 @@ export const itemSchema = pgTable("item", {
     .references(() => userSchema.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
   priceStart: real("priceStart").notNull(),
+  highestBid: real("highestBid").notNull(),
   fileKey: text("fileKey").notNull(),
   bidInterval: real("bidInterval").notNull(),
+})
+
+export const bidSchema = pgTable("bid", {
+  id: serial("id").primaryKey(),
+  amount: real("amount").notNull(),
+  itemId: serial("itemId")
+    .notNull()
+    .references(() => itemSchema.id, { onDelete: "cascade" }),
+  userId: text("userId")
+    .notNull()
+    .references(() => userSchema.id, { onDelete: "cascade" }),
+  timestamp: timestamp("timestamp", { mode: "date"}).notNull(),
 })
 
 export const userSchema = pgTable("user", {
@@ -72,4 +82,12 @@ export const userSchema = pgTable("user", {
   image: text("image"),
 })
 
+export const userRelations = relations(bidSchema, ({ one }) => ({
+  user: one(userSchema, {
+    fields: [bidSchema.userId],
+    references: [userSchema.id],
+  })
+}))
+
 export type Item = typeof itemSchema.$inferSelect;
+export type Bid = typeof bidSchema.$inferSelect;

@@ -35,17 +35,20 @@ export default function ItemCreatePage() {
 
           const name = formData.get("name") as string;
           const priceStart = parseFloat(formData.get("priceStart") as string);
+          const bidInterval = parseFloat(formData.get("bidInterval") as string);
 
           await createItemAction({
             name,
             priceStart,
+            bidInterval,
             fileName: file.name,
           })
         }}
       >
         <FileInput name="file" placeholder="Upload images"/>
         <TextInput required name="name" placeholder="Name your item" />
-        <NumberInput required name="priceStart" decimalScale={2} min={1} placeholder="Starting price" rightSection={<Text>Sample Currency</Text>} fixedDecimalScale />
+        <NumberInput required name="priceStart" decimalScale={2} min={1} placeholder="Starting price" rightSection={<Text>$</Text>} fixedDecimalScale />
+        <NumberInput required name="bidInterval" decimalScale={2} min={1} placeholder="Bid interval" rightSection={<Text>$</Text>} fixedDecimalScale />
 
         <Button className="self-end" type="submit">Post item</Button>
       </form>

@@ -3,6 +3,9 @@ import '@mantine/core/styles.css';
 import {AppShell, Box, ColorSchemeScript, MantineProvider} from '@mantine/core';
 import {Header} from "@/app/header";
 import "./globals.css"
+import {Providers} from "@/app/providers";
+import {SessionProvider} from "next-auth/react";
+import React from "react";
 
 export const metadata: Metadata = {
   title: "Biddy",
@@ -23,11 +26,14 @@ export default function RootLayout({
       <body>
         <MantineProvider>
           <AppShell header={{height: "4rem"}}>
-            <Header/>
-
-            <Box className="p-8">
-              {children}
-            </Box>
+              <SessionProvider>
+                <Providers>
+                  <Header/>
+                  <Box className="p-8">
+                    {children}
+                  </Box>
+                </Providers>
+              </SessionProvider>
           </AppShell>
         </MantineProvider>
       </body>

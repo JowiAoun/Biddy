@@ -1,12 +1,16 @@
-import {AppShellHeader, Box} from "@mantine/core";
-import Image from "next/image";
-import {SignOut} from "@/components/signOut";
-import {SignIn} from "@/components/signIn";
-import {auth} from "@/auth";
-import Link from "next/link";
+'use client';
 
-export async function Header() {
-  const session = await auth();
+import {AppShellHeader, Box, Button} from "@mantine/core";
+import Image from "next/image";
+import Link from "next/link";
+import {NotificationFeedPopover, NotificationIconButton} from "@knocklabs/react";
+import {useRef, useState} from "react";
+import {signIn, signOut, useSession} from "next-auth/react";
+
+export function Header() {
+  const [isVisible, setIsVisible] = useState(false);
+  const notifButtonRef = useRef(null);
+  const session = useSession();
 
   return (
     <AppShellHeader className="bg-gray-200 flex justify-between">
@@ -30,13 +34,36 @@ export async function Header() {
       </Box>
 
       <Box className="flex items-center gap-4 py-4 pr-4">
+        <NotificationIconButton
+          ref={notifButtonRef}
+          onClick={(e) => setIsVisible(!isVisible)}
+        />
+        <NotificationFeedPopover
+          buttonRef={notifButtonRef}
+          isVisible={isVisible}
+          onClose={() => setIsVisible(false)}
+        />
+
         <Box>
-          {session?.user?.name}
+          {session?.data?.user?.name}
         </Box>
         <Box>
-          {session ? <SignOut/> : <SignIn/>}
+          {session
+            ?
+            <Button
+              type="submit"
+              onClick={() => signOut({callbackUrl: "/"})}>
+              Sign Out
+            </Button>
+            :
+            <Button
+              type="submit"
+              onClick={() => signIn()}>
+              Sign In
+            </Button>
+          }
         </Box>
       </Box>
     </AppShellHeader>
-  );
+);
 }

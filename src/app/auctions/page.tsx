@@ -1,4 +1,3 @@
-import { database } from "@/db/database";
 import {
   AppShellMain,
   Text,
@@ -6,10 +5,10 @@ import {
   GridCol
 } from "@mantine/core";
 import {ItemCard} from "@/app/itemCard";
-import {Item, itemSchema} from "@/db/schema";
-import {eq} from "drizzle-orm";
+import {Item} from "@/db/schema";
 import {auth} from "@/auth";
 import {EmptyState} from "@/app/auctions/emptyState";
+import {getItemsByUser} from "@/db/items";
 
 export default async function MyAuctionPage() {
   const session = await auth();
@@ -18,9 +17,7 @@ export default async function MyAuctionPage() {
     throw new Error("Unauthorized");
   }
 
-  const allItems = await database.query.itemSchema.findMany({
-    where: eq(itemSchema.userId, session.user.id)
-  });
+  const allItems = await getItemsByUser(session.user.id)
 
   const hasItems = allItems.length > 0;
 

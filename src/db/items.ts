@@ -7,3 +7,9 @@ export async function getItem(itemId: number) {
     where: eq(itemSchema.id, itemId),
   })
 }
+
+export async function getItemsByUser(userId: string) {
+  return database.query.itemSchema.findMany({
+    where: eq(itemSchema.userId, userId)
+  });
+}

@@ -25,16 +25,16 @@ export default function RootLayout({
       </head>
       <body>
         <MantineProvider>
-          <AppShell header={{height: "4rem"}}>
-              <SessionProvider>
-                <Providers>
-                  <Header/>
-                  <Box className="p-8">
-                    {children}
-                  </Box>
-                </Providers>
-              </SessionProvider>
-          </AppShell>
+          <SessionProvider>
+            <Providers>
+              <AppShell header={{height: "4rem"}}>
+                <Header/>
+                <Box className="p-8">
+                  {children}
+                </Box>
+              </AppShell>
+            </Providers>
+          </SessionProvider>
         </MantineProvider>
       </body>
     </html>

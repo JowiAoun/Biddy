@@ -8,5 +8,6 @@ Well-designed auction application using the following techs:
 - OAuth
 - CloudFlare R2
 - Google authentication
+- Knock: In-app notifications
 - Zod
 - Docker, compose

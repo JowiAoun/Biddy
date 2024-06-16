@@ -2,13 +2,14 @@ import {
   AppShellMain, Box, Button, Group, Image,
   Text
 } from "@mantine/core";
-import {Bid, Item} from "@/db/schema";
+import {Bid} from "@/db/schema";
 import Link from "next/link";
 import {getImageUrl} from "@/util/files";
 import {BidCard} from "@/app/items/[itemId]/bidCard";
 import {createBidAction} from "@/app/items/[itemId]/actions";
 import {getBidsForItem} from "@/db/bids";
 import {getItem} from "@/db/items";
+import {auth} from "@/auth";
 
 export default async function ItemPage({
   params: { itemId },
@@ -16,11 +17,12 @@ export default async function ItemPage({
   params: { itemId: string },
 }) {
   const item = await getItem(parseInt(itemId));
+  const session = await auth();
 
   if (!item) {
     return (
       <AppShellMain className="space-y-8 flex flex-col items-center">
-        <Image src="/noItemsListed.svg" width={200} height={200} alt="No items listed"/>
+        <Image src="/images/noItemsListed.svg" width={200} height={200} alt="No items listed"/>
         <Text className="text-4xl font-bold">
           Item not found
           {/*  TODO: Use generic 404 page */}
@@ -42,6 +44,8 @@ export default async function ItemPage({
 
   const hasBids = bids.length > 0;
 
+  const canPlaceBid = session && item.userId !== session.user.id;
+  
   return (
     <AppShellMain>
       <Group className="gap-8">
@@ -73,9 +77,11 @@ export default async function ItemPage({
             <Text className="text-2xl font-bold">
               Bids history
             </Text>
-            <form action={createBidAction.bind(null, item.id)}>
-              <Button type="submit">Place a bid</Button>
-            </form>
+            {canPlaceBid && (
+              <form action={createBidAction.bind(null, item.id)}>
+                <Button type="submit">Place a bid</Button>
+              </form>
+            )}
           </Box>
 
           {hasBids ?
@@ -83,15 +89,17 @@ export default async function ItemPage({
               <BidCard bid={bid} key={bid.id}/>
             ))
             : <Box className="flex flex-col items-center gap-8 bg-gray-100 rounded-xl p-12">
-              <Image src="/noItemsListed.svg" width={200} height={200} alt="Package"/>
-              <Text className="text-2xl font-bold">No bids yet</Text>
-              <form action={createBidAction.bind(null, item.id)}>
-                <Button type="submit">Place a bid</Button>
-              </form>
-            </Box>
+                <Image src="/noItemsListed.svg" width={200} height={200} alt="Package"/>
+                <Text className="text-2xl font-bold">No bids yet</Text>
+                {canPlaceBid && (
+                  <form action={createBidAction.bind(null, item.id)}>
+                    <Button type="submit">Place a bid</Button>
+                  </form>
+                )}
+              </Box>
           }
-        </Box>
-      </Group>
-    </AppShellMain>
-  );
-}
+          </Box>
+        </Group>
+      </AppShellMain>
+    );
+  }

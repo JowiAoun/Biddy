@@ -1,6 +1,6 @@
 'use client';
 
-import {AppShellHeader, Box, Button} from "@mantine/core";
+import {AppShellHeader, Avatar, Box, Button} from "@mantine/core";
 import Image from "next/image";
 import Link from "next/link";
 import {NotificationFeedPopover, NotificationIconButton} from "@knocklabs/react";
@@ -12,21 +12,27 @@ export function Header() {
   const notifButtonRef = useRef(null);
   const session = useSession();
 
+  const userId = session?.data?.user?.id;
+
   return (
     <AppShellHeader className="bg-gray-200 flex justify-between">
       <Box className="flex items-center gap-12">
         <Link href="/" className="flex items-center gap-1 hover:underline pl-1">
-          <Image src="/biddyLogo.png" alt="Biddy Logo" width={50} height={50}/>
+          <Image src="/images/biddyLogo.png" alt="Biddy Logo" width={50} height={50}/>
           Biddy.ca
         </Link>
 
-        <Link href="/" className="flex items-center gap-1 hover:underline pl-1">
-          All Auctions
-        </Link>
+        {userId && (
+          <>
+            <Link href="/" className="flex items-center gap-1 hover:underline pl-1">
+              All Auctions
+            </Link>
 
-        <Link href="/items/create" className="flex items-center gap-1 hover:underline pl-1">
-          Create Auction
-        </Link>
+            <Link href="/items/create" className="flex items-center gap-1 hover:underline pl-1">
+              Create Auction
+            </Link>
+          </>
+        )}
 
         <Link href="/auctions" className="flex items-center gap-1 hover:underline pl-1">
           My Auctions
@@ -34,21 +40,28 @@ export function Header() {
       </Box>
 
       <Box className="flex items-center gap-4 py-4 pr-4">
-        <NotificationIconButton
-          ref={notifButtonRef}
-          onClick={(e) => setIsVisible(!isVisible)}
-        />
-        <NotificationFeedPopover
-          buttonRef={notifButtonRef}
-          isVisible={isVisible}
-          onClose={() => setIsVisible(false)}
-        />
+        {userId &&
+          <>
+            <NotificationIconButton
+              ref={notifButtonRef}
+              onClick={(e) => setIsVisible(!isVisible)}
+            />
+            <NotificationFeedPopover
+              buttonRef={notifButtonRef}
+              isVisible={isVisible}
+              onClose={() => setIsVisible(false)}
+            />
+          </>
+        }
 
         <Box>
           {session?.data?.user?.name}
         </Box>
         <Box>
-          {session
+          <Avatar src={session.data?.user?.image} w={40} h={40} alt="avatar"></Avatar>
+        </Box>
+        <Box>
+          {userId
             ?
             <Button
               type="submit"
@@ -65,5 +78,5 @@ export function Header() {
         </Box>
       </Box>
     </AppShellHeader>
-);
+  );
 }

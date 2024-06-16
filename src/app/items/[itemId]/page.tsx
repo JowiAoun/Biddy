@@ -2,22 +2,20 @@ import {
   AppShellMain, Box, Button, Group, Image,
   Text
 } from "@mantine/core";
-import {database} from "@/db/database";
-import {Bid, bidSchema, itemSchema} from "@/db/schema";
-import {desc, eq} from "drizzle-orm";
+import {Bid, Item} from "@/db/schema";
 import Link from "next/link";
 import {getImageUrl} from "@/util/files";
 import {BidCard} from "@/app/items/[itemId]/bidCard";
 import {createBidAction} from "@/app/items/[itemId]/actions";
+import {getBidsForItem} from "@/db/bids";
+import {getItem} from "@/db/items";
 
 export default async function ItemPage({
   params: { itemId },
 }: {
   params: { itemId: string },
 }) {
-  const item = await database.query.itemSchema.findFirst({
-    where: eq(itemSchema.id, parseInt(itemId)),
-  })
+  const item = await getItem(parseInt(itemId));
 
   if (!item) {
     return (
@@ -40,18 +38,7 @@ export default async function ItemPage({
     );
   }
 
-  const bids = await database.query.bidSchema.findMany({
-    where: eq(bidSchema.itemId, item.id),
-    orderBy: desc(bidSchema.id),
-    with: {
-      user: {
-        columns: {
-          image: true,
-          name: true,
-        }
-      }
-    }
-  })
+  const bids = await getBidsForItem(parseInt(itemId));
 
   const hasBids = bids.length > 0;
 

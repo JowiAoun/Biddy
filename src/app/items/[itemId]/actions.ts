@@ -6,6 +6,7 @@ import {bidSchema, itemSchema} from "@/db/schema";
 import {eq} from "drizzle-orm";
 import {revalidatePath} from "next/cache";
 import {knockWorkflowTrigger} from "@/lib/knock";
+import {isAuctionOver} from "@/util/time";
 
 export async function createBidAction(itemId: number) {
   const session = await auth();
@@ -22,6 +23,10 @@ export async function createBidAction(itemId: number) {
 
   if (!item) {
     throw new Error("Item not found")
+  }
+
+  if (isAuctionOver(item.endDate)) {
+    throw new Error("Auction has ended")
   }
 
   const newBidAmount = item.highestBid + item.bidInterval

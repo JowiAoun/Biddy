@@ -58,6 +58,7 @@ export const itemSchema = pgTable("item", {
   highestBid: real("highestBid").notNull(),
   fileKey: text("fileKey").notNull(),
   bidInterval: real("bidInterval").notNull(),
+  endDate: timestamp("endDate", {mode: "date"}).notNull(),
 })
 
 export const bidSchema = pgTable("bid", {

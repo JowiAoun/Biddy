@@ -1,5 +1,5 @@
 import {
-  AppShellMain, Box, Button, Group, Image,
+  AppShellMain, Badge, Box, Button, Group, Image,
   Text
 } from "@mantine/core";
 import {Bid} from "@/db/schema";
@@ -10,6 +10,7 @@ import {createBidAction} from "@/app/items/[itemId]/actions";
 import {getBidsForItem} from "@/db/bids";
 import {getItem} from "@/db/items";
 import {auth} from "@/auth";
+import {isAuctionOver} from "@/util/time";
 
 export default async function ItemPage({
   params: { itemId },
@@ -44,7 +45,12 @@ export default async function ItemPage({
 
   const hasBids = bids.length > 0;
 
-  const canPlaceBid = session && item.userId !== session.user.id;
+  const isAuctionOverRes = isAuctionOver(item.endDate);
+
+  const canPlaceBid =
+    session &&
+    item.userId !== session.user.id &&
+    !isAuctionOverRes;
 
   return (
     <AppShellMain>
@@ -53,6 +59,12 @@ export default async function ItemPage({
           <Text className="text-4xl font-bold">
             {item.name}
           </Text>
+
+          {isAuctionOverRes && (
+            <Badge className="w-fit" variant="destructive">
+              Bidding over
+            </Badge>
+          )}
 
           <Image
             className="rounded-xl"
@@ -90,7 +102,7 @@ export default async function ItemPage({
             ))
             : (
               <Box className="flex flex-col items-center gap-8 bg-gray-100 rounded-xl p-12">
-                <Image src="/noItemsListed.svg" width={200} height={200} alt="Package"/>
+                <Image src="/images/noItemsListed.svg" width={200} height={200} alt="Package"/>
                 <Text className="text-2xl font-bold">No bids yet</Text>
                 {canPlaceBid && (
                   <form action={createBidAction.bind(null, item.id)}>

@@ -2,3 +2,5 @@
 [ ] - Create .env.sample
 [ ] - Fix potential race conditions on bidding & other DB writes
 [ ] - Clean up providers and layout a little, my god
+[ ] - Design a loading page
+[ ] - Get a good logo

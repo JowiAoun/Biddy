@@ -32,7 +32,7 @@ export async function createBidAction(itemId: number) {
   await database.insert(bidSchema).values({
     amount: newBidAmount,
     itemId,
-    userId: session.user.id,
+    userId: userId,
     timestamp: new Date(),
   });
 
@@ -41,7 +41,7 @@ export async function createBidAction(itemId: number) {
   })
     .where(eq(itemSchema.id, itemId));
 
-  // Send notifications to everyone else who has previously placed a bid
+  // Send notifications to everyone who has previously placed a bid
   const itemBids = await database.query.bidSchema.findMany({
     where: eq(bidSchema.itemId, itemId),
     with: {
@@ -53,12 +53,12 @@ export async function createBidAction(itemId: number) {
     id: string;
     name: string;
     email: string;
-  }[] = []
+  }[] = [];
 
   for (const bid of itemBids) {
     if (
-      bid.userId !== session.user.id &&
-      recipients.find((recipient: any) => recipient.id === bid.userId)
+      bid.userId !== userId &&
+      !recipients.find((recipient: any) => recipient.id === bid.userId)
       ) {
       recipients.push({
         id: bid.userId + "",
@@ -85,6 +85,8 @@ export async function createBidAction(itemId: number) {
       }
     });
   }
+
+  console.log("Sent notification to:", recipients);
 
   revalidatePath(`/items/${itemId}`)
 }

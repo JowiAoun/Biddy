@@ -5,24 +5,27 @@ import {
   KnockProvider,
 } from "@knocklabs/react";
 import "@knocklabs/react/dist/index.css";
-import {ReactNode} from "react";
+import React, {useEffect} from "react";
 import {env} from "@/env";
 import {useSession} from "next-auth/react";
 
-export function Providers({children}: {children: ReactNode}) {
-  const session = useSession();
+export function Providers({ children }: { children: React.ReactNode }) {
+  const { data: session, status } = useSession();
 
-  // TODO: Current issue: session ID is always undefined, even after logging in
-  console.log("Session:", session);
+  useEffect(() => {}, [session, status]);
 
-  if (!session.data?.user?.id) {
-    return children;
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
+
+  if (!session?.user?.id) {
+    return <>{children}</>;
   }
 
   return (
     <KnockProvider
       apiKey={env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY}
-      userId={session?.data?.user?.id ?? ""}
+      userId={session.user.id}
     >
       <KnockFeedProvider feedId={env.NEXT_PUBLIC_KNOCK_FEED_ID}>
         {children}

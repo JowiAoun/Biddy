@@ -45,7 +45,7 @@ export default async function ItemPage({
   const hasBids = bids.length > 0;
 
   const canPlaceBid = session && item.userId !== session.user.id;
-  
+
   return (
     <AppShellMain>
       <Group className="gap-8">
@@ -88,7 +88,8 @@ export default async function ItemPage({
             bids.map((bid: Bid) => (
               <BidCard bid={bid} key={bid.id}/>
             ))
-            : <Box className="flex flex-col items-center gap-8 bg-gray-100 rounded-xl p-12">
+            : (
+              <Box className="flex flex-col items-center gap-8 bg-gray-100 rounded-xl p-12">
                 <Image src="/noItemsListed.svg" width={200} height={200} alt="Package"/>
                 <Text className="text-2xl font-bold">No bids yet</Text>
                 {canPlaceBid && (
@@ -97,6 +98,7 @@ export default async function ItemPage({
                   </form>
                 )}
               </Box>
+            )
           }
           </Box>
         </Group>

@@ -22,21 +22,22 @@ export function Header() {
           Biddy.ca
         </Link>
 
+        <Link href="/" className="flex items-center gap-1 hover:underline pl-1">
+          All Auctions
+        </Link>
+
         {userId && (
           <>
-            <Link href="/" className="flex items-center gap-1 hover:underline pl-1">
-              All Auctions
-            </Link>
-
             <Link href="/items/create" className="flex items-center gap-1 hover:underline pl-1">
               Create Auction
+            </Link>
+
+            <Link href="/auctions" className="flex items-center gap-1 hover:underline pl-1">
+              My Auctions
             </Link>
           </>
         )}
 
-        <Link href="/auctions" className="flex items-center gap-1 hover:underline pl-1">
-          My Auctions
-        </Link>
       </Box>
 
       <Box className="flex items-center gap-4 py-4 pr-4">
@@ -44,7 +45,7 @@ export function Header() {
           <>
             <NotificationIconButton
               ref={notifButtonRef}
-              onClick={(e) => setIsVisible(!isVisible)}
+              onClick={() => setIsVisible(!isVisible)}
             />
             <NotificationFeedPopover
               buttonRef={notifButtonRef}

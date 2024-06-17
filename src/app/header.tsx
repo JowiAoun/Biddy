@@ -30,11 +30,11 @@ export function Header() {
 
         {userId && (
           <>
-            <Link href="./items/create" className="flex items-center gap-1 hover:underline pl-1">
+            <Link href="/items/create" className="flex items-center gap-1 hover:underline pl-1">
               Create Auction
             </Link>
 
-            <Link href="./auctions" className="flex items-center gap-1 hover:underline pl-1">
+            <Link href="/auctions" className="flex items-center gap-1 hover:underline pl-1">
               My Auctions
             </Link>
           </>
@@ -53,7 +53,7 @@ export function Header() {
               buttonRef={notifButtonRef}
               isVisible={isVisible}
               onClose={() => setIsVisible(false)}
-              renderItem={({item, ...props}) => <NotificationCell {...props} item={item}/>}
+              renderItem={({item, ...props}) => <NotificationCell {...props} item={item} closeNotifs={() => setIsVisible(false)}/>}
             />
           </>
         }

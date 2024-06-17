@@ -5,3 +5,7 @@
 [ ] - Design a loading page
 [ ] - Get a good logo
 [ ] - Put more explicit types
+[ ] - Implement caching
+        - Start with images fetched from the client (notificationCell)
+[ ] - Test adding two images with identical keys, if bad result use UUIDs instead
+[ ] - Add date of action to notification cell

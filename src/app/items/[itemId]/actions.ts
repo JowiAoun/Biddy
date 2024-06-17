@@ -74,7 +74,8 @@ export async function createBidAction(itemId: number) {
       data: {
         itemId,
         bidAmount: newBidAmount,
-        itemName: item.name
+        itemName: item.name,
+        image: item.fileKey,
       }
     })
   }

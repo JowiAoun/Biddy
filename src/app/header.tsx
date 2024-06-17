@@ -6,6 +6,8 @@ import Link from "next/link";
 import {NotificationFeedPopover, NotificationIconButton} from "@knocklabs/react";
 import {useRef, useState} from "react";
 import {signIn, signOut, useSession} from "next-auth/react";
+import {NotificationCell} from "@/components/notificationCell";
+
 
 export function Header() {
   const [isVisible, setIsVisible] = useState(false);
@@ -28,11 +30,11 @@ export function Header() {
 
         {userId && (
           <>
-            <Link href="/items/create" className="flex items-center gap-1 hover:underline pl-1">
+            <Link href="./items/create" className="flex items-center gap-1 hover:underline pl-1">
               Create Auction
             </Link>
 
-            <Link href="/auctions" className="flex items-center gap-1 hover:underline pl-1">
+            <Link href="./auctions" className="flex items-center gap-1 hover:underline pl-1">
               My Auctions
             </Link>
           </>
@@ -51,6 +53,7 @@ export function Header() {
               buttonRef={notifButtonRef}
               isVisible={isVisible}
               onClose={() => setIsVisible(false)}
+              renderItem={({item, ...props}) => <NotificationCell {...props} item={item}/>}
             />
           </>
         }

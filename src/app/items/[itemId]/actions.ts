@@ -5,10 +5,7 @@ import {database} from "@/db/database";
 import {bidSchema, itemSchema} from "@/db/schema";
 import {eq} from "drizzle-orm";
 import {revalidatePath} from "next/cache";
-import {Knock} from "@knocklabs/node";
-import { env } from "@/env";
-
-const knock = new Knock(env.KNOCK_SECRET_API_KEY);
+import {knockWorkflowTrigger} from "@/lib/knock";
 
 export async function createBidAction(itemId: number) {
   const session = await auth();
@@ -70,23 +67,17 @@ export async function createBidAction(itemId: number) {
 
   if (recipients.length > 0) {
     // TODO: Create knock's own notification file abstraction for workflows
-    await knock.workflows.trigger("biddy-user-placed-bid", {
-      actor: {
-        id: userId,
-        name: session.user.name ?? "Anonymous",
-        email: session.user.email,
-        collection: "users"
-      },
+    await knockWorkflowTrigger({
+      workflowKey: "biddy-user-placed-bid",
+      session,
       recipients,
       data: {
         itemId,
         bidAmount: newBidAmount,
-        itemName: item.name,
+        itemName: item.name
       }
-    });
+    })
   }
-
-  console.log("Sent notification to:", recipients);
 
   revalidatePath(`/items/${itemId}`)
 }

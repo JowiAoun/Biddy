@@ -4,3 +4,4 @@
 [ ] - Clean up providers and layout a little, my god
 [ ] - Design a loading page
 [ ] - Get a good logo
+[ ] - Put more explicit types

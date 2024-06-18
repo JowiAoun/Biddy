@@ -1,7 +1,7 @@
 [ ] - Create terraform code for GCP API and Cloudflare R2
 [x] - Create .env.sample
 [ ] - Fix potential race conditions on bidding & other DB writes
-[ ] - Clean up providers and layout a little, my god
+[ ] - Clean up providers and layout a little
 [ ] - Design a loading page
 [ ] - Get a good logo
 [ ] - Put more explicit types
@@ -15,3 +15,5 @@
 [ ] - For live bids, fine-tune times with useState to have real-time item info
 [ ] - Add ability to send emails & turn off emails in user settings
         - Use SES or Resend through Knock
+[ ] - Limit & offset auction and bid queries, load by request
+[ ] - Create a listing preview!!! How cool would that be

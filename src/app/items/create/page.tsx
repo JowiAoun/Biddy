@@ -11,6 +11,7 @@ import {createItemAction, createUploadUrlAction} from "@/app/items/create/action
 import {DatesProvider, DateTimePicker} from "@mantine/dates";
 import {useState} from "react";
 import {getNextDaySameTimeRoundedToHour} from "@/util/time";
+import {ItemConditionEnum} from "@/util/enums";
 
 export default function ItemCreatePage() {
   const [endDate, setEndDate] = useState<Date>(getNextDaySameTimeRoundedToHour());
@@ -42,12 +43,14 @@ export default function ItemCreatePage() {
           const name = formData.get("name") as string;
           const priceStart = parseFloat(formData.get("priceStart") as string);
           const bidInterval = parseFloat(formData.get("bidInterval") as string);
+          const condition = ItemConditionEnum.New; // TODO: Change to user selected
 
           await createItemAction({
             name,
             priceStart,
             bidInterval,
-            fileName: file.name,
+            imageMain: file.name,
+            condition,
             endDate,
           })
         }}

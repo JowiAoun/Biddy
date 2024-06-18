@@ -5,10 +5,10 @@ import {
 import {Bid} from "@/db/schema";
 import Link from "next/link";
 import {getImageUrl} from "@/util/files";
-import {BidCard} from "@/app/items/[itemId]/bidCard";
+import {BidCard} from "@/components/bidCard"
 import {createBidAction} from "@/app/items/[itemId]/actions";
 import {getBidsForItem} from "@/db/bids";
-import {getItem} from "@/db/items";
+import {getItemDetailed} from "@/db/items";
 import {auth} from "@/auth";
 import {isAuctionOver} from "@/util/time";
 
@@ -17,7 +17,7 @@ export default async function ItemPage({
 }: {
   params: { itemId: string },
 }) {
-  const item = await getItem(parseInt(itemId));
+  const item = await getItemDetailed(parseInt(itemId));
   const session = await auth();
 
   if (!item) {
@@ -68,7 +68,7 @@ export default async function ItemPage({
 
           <Image
             className="rounded-xl"
-            src={getImageUrl(item.fileKey)}
+            src={getImageUrl(item.imageMain)}
             width={200}
             height={200}
             alt={item.name}

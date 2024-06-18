@@ -5,19 +5,27 @@ import {itemSchema} from "@/db/schema";
 import {auth} from "@/auth";
 import {redirect} from "next/navigation";
 import {getSignedUrlForS3Object} from "@/lib/s3";
+import {ItemConditionEnum} from "@/util/enums";
 
 export async function createUploadUrlAction(key: string, type: string) {
   return await getSignedUrlForS3Object(key, type);
 }
 
 export async function createItemAction({
-  fileName,
+  imageMain,
   name,
   priceStart,
   bidInterval,
+  condition,
   endDate,
-  }: {fileName: string, name: string, priceStart: number, bidInterval: number, endDate: Date}
-) {
+  }: {
+  imageMain: string,
+  name: string,
+  priceStart: number,
+  bidInterval: number,
+  condition: ItemConditionEnum,
+  endDate: Date
+}) {
   const session = await auth();
 
   if (!session) {
@@ -31,11 +39,12 @@ export async function createItemAction({
   }
 
   await database.insert(itemSchema).values({
-    name: name,
-    priceStart: priceStart,
+    name,
+    priceStart,
     highestBid: priceStart,
-    bidInterval: bidInterval,
-    fileKey: fileName,
+    bidInterval,
+    condition,
+    imageMain,
     userId: user.id,
     endDate,
   })

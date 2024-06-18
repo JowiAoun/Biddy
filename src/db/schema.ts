@@ -1,6 +1,7 @@
 import {integer, pgTable, primaryKey, real, serial, text, timestamp} from "drizzle-orm/pg-core";
 import {AdapterAccountType} from "@auth/core/adapters";
-import {relations} from "drizzle-orm";
+import {relations, sql} from "drizzle-orm";
+import {ItemConditionEnum} from "@/util/enums";
 
 export const accountSchema = pgTable(
   "account",
@@ -34,18 +35,13 @@ export const sessionSchema = pgTable("session", {
   expires: timestamp("expires", { mode: "date" }).notNull(),
 })
 
-export const verificationTokenSchema = pgTable(
-  "verificationToken",
-  {
+export const verificationTokenSchema = pgTable("verificationToken", {
     identifier: text("identifier").notNull(),
     token: text("token").notNull(),
     expires: timestamp("expires", { mode: "date" }).notNull(),
-  },
-  (verificationToken) => ({
-    compositePk: primaryKey({
+  }, (verificationToken) => ({compositePk: primaryKey({
       columns: [verificationToken.identifier, verificationToken.token],
-    }),
-  })
+    }),})
 )
 
 export const itemSchema = pgTable("item", {
@@ -54,11 +50,21 @@ export const itemSchema = pgTable("item", {
     .notNull()
     .references(() => userSchema.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
+  condition: integer("condition").notNull(),
   priceStart: real("priceStart").notNull(),
   highestBid: real("highestBid").notNull(),
-  fileKey: text("fileKey").notNull(),
   bidInterval: real("bidInterval").notNull(),
+  numBids: integer("numBids").notNull().default(0),
+  startDate: timestamp("startDate", {mode: "date"}).notNull().default(new Date()),
   endDate: timestamp("endDate", {mode: "date"}).notNull(),
+  imageMain: text("fileKey").notNull(),
+  tags: text("tags").array(10).notNull().default(sql`ARRAY[]::text[]`),
+})
+
+export const itemDetailsSchema = pgTable("itemDetails", {
+  itemId: text("itemId").notNull().references(() => itemSchema.id, { onDelete: "cascade" }).primaryKey(),
+  description: text("description"),
+  images: text("images").array(10).notNull().default(sql`ARRAY[]::text[]`),
 })
 
 export const bidSchema = pgTable("bid", {

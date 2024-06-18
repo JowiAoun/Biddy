@@ -12,7 +12,7 @@ export function ItemCard({item}: {item: Item}) {
     <Card key={item.id} shadow="sm" padding="lg" radius="md" withBorder>
       <CardSection>
         <Image
-          src={getImageUrl(item.fileKey)}
+          src={getImageUrl(item.imageMain)}
           width={200}
           height={200}
           alt={item.name}

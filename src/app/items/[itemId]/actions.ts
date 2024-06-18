@@ -7,6 +7,7 @@ import {eq} from "drizzle-orm";
 import {revalidatePath} from "next/cache";
 import {knockWorkflowTrigger} from "@/lib/knock";
 import {isAuctionOver} from "@/util/time";
+import {getItem} from "@/db/items";
 
 export async function createBidAction(itemId: number) {
   const session = await auth();
@@ -17,9 +18,7 @@ export async function createBidAction(itemId: number) {
     throw new Error("Unauthorized")
   }
 
-  const item = await database.query.itemSchema.findFirst({
-    where: eq(itemSchema.id, itemId)
-  });
+  const item = await getItem(itemId);
 
   if (!item) {
     throw new Error("Item not found")
@@ -80,7 +79,7 @@ export async function createBidAction(itemId: number) {
         itemId,
         bidAmount: newBidAmount,
         itemName: item.name,
-        image: item.fileKey,
+        image: item.imageMain,
       }
     })
   }

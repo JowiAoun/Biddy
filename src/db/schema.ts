@@ -1,7 +1,6 @@
 import {integer, pgTable, primaryKey, real, serial, text, timestamp} from "drizzle-orm/pg-core";
 import {AdapterAccountType} from "@auth/core/adapters";
 import {relations, sql} from "drizzle-orm";
-import {ItemConditionEnum} from "@/util/enums";
 
 export const accountSchema = pgTable(
   "account",
@@ -62,7 +61,7 @@ export const itemSchema = pgTable("item", {
 })
 
 export const itemDetailsSchema = pgTable("itemDetails", {
-  itemId: text("itemId").notNull().references(() => itemSchema.id, { onDelete: "cascade" }).primaryKey(),
+  itemId: integer("itemId").notNull().references(() => itemSchema.id, { onDelete: "cascade" }),
   description: text("description"),
   images: text("images").array(10).notNull().default(sql`ARRAY[]::text[]`),
 })

@@ -1,20 +1,19 @@
 "use client";
 
-import {
-  AppShellMain,
-  Button,
-  TextInput,
-  Text, NumberInput, FileInput,
-} from "@mantine/core";
+import {AppShellMain, Button, FileInput, NumberInput, Select, Text, TextInput,} from "@mantine/core";
 import '@mantine/dates/styles.css';
 import {createItemAction, createUploadUrlAction} from "@/app/items/create/actions";
 import {DatesProvider, DateTimePicker} from "@mantine/dates";
 import {useState} from "react";
 import {getNextDaySameTimeRoundedToHour} from "@/util/time";
 import {ItemConditionEnum} from "@/util/enums";
+import {getNumericEnumIndex} from "@/util/item";
+
+const itemConditionArray = Object.keys(ItemConditionEnum).filter(key => isNaN(Number(key)));
 
 export default function ItemCreatePage() {
   const [endDate, setEndDate] = useState<Date>(getNextDaySameTimeRoundedToHour());
+  const [condition, setCondition] = useState<string | null>();
 
   return (
     <AppShellMain className="space-y-8">
@@ -29,6 +28,7 @@ export default function ItemCreatePage() {
           const form = e.currentTarget as HTMLFormElement;
           const formData = new FormData(form);
           const file = formData.get("file") as File;
+          const condition = getNumericEnumIndex(ItemConditionEnum, formData.get("condition") as string)
 
           const uploadUrl = await createUploadUrlAction(file.name, file.type);
           const uploadFormData = new FormData();
@@ -43,7 +43,10 @@ export default function ItemCreatePage() {
           const name = formData.get("name") as string;
           const priceStart = parseFloat(formData.get("priceStart") as string);
           const bidInterval = parseFloat(formData.get("bidInterval") as string);
-          const condition = ItemConditionEnum.New; // TODO: Change to user selected
+
+          if (!condition) {
+            return;
+          }
 
           await createItemAction({
             name,
@@ -57,6 +60,7 @@ export default function ItemCreatePage() {
       >
         <FileInput name="file" placeholder="Upload images"/>
         <TextInput required name="name" placeholder="Name your item" />
+        <Select placeholder="Select item quality" data={itemConditionArray} allowDeselect={false} value={condition} onChange={setCondition}/>
         <NumberInput required name="priceStart" decimalScale={2} min={1} placeholder="Starting price" rightSection={<Text>$</Text>} fixedDecimalScale />
         <NumberInput required name="bidInterval" decimalScale={2} min={1} placeholder="Bid interval" rightSection={<Text>$</Text>} fixedDecimalScale />
         <DatesProvider settings={{ consistentWeeks: true }}>

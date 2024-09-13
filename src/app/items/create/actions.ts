@@ -5,7 +5,6 @@ import {itemSchema} from "@/db/schema";
 import {auth} from "@/auth";
 import {redirect} from "next/navigation";
 import {getSignedUrlForS3Object} from "@/lib/s3";
-import {ItemConditionEnum} from "@/util/enums";
 
 export async function createUploadUrlAction(key: string, type: string) {
   return await getSignedUrlForS3Object(key, type);
@@ -23,7 +22,7 @@ export async function createItemAction({
   name: string,
   priceStart: number,
   bidInterval: number,
-  condition: ItemConditionEnum,
+  condition: number,
   endDate: Date
 }) {
   const session = await auth();

@@ -11,3 +11,4 @@ Well-designed auction application using the following techs:
 - Knock: In-app notifications
 - Zod
 - Docker, compose
+- test
